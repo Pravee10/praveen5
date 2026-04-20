@@ -1,0 +1,202 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Happy Birthday Ganasri</title>
+<style>
+  /* Reset and Base Styles */
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { 
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+    background: #fff0f5; 
+    overflow-x: hidden; 
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Splash Screen - Adapts to all heights */
+  #splash {
+    position: fixed; inset: 0;
+    background: linear-gradient(160deg, #ffe0ef, #ffb3d1, #ff85b3);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; z-index: 100; padding: 20px;
+  }
+  
+  .splash-particles { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+  .sp { position: absolute; animation: rise linear infinite; opacity: 0; }
+  @keyframes rise { 0% { transform: translateY(110vh); opacity: .6 } 100% { transform: translateY(-10vh); opacity: 0 } }
+
+  .big-kitty { font-size: clamp(60px, 15vw, 100px); animation: bk 2s ease-in-out infinite alternate; }
+  @keyframes bk { from { transform: translateY(0) rotate(-4deg); } to { transform: translateY(-15px) rotate(4deg); } }
+
+  .splash-title { font-size: clamp(18px, 5vw, 24px); letter-spacing: 4px; color: #8b0050; text-transform: uppercase; margin: 15px 0; }
+  
+  /* Buttons - Mobile friendly sizing */
+  .magic-btn {
+    background: linear-gradient(135deg, #ff6aaa, #ff2d78);
+    color: #fff; border: none; border-radius: 50px;
+    padding: 15px 40px; font-size: 18px; font-weight: bold;
+    cursor: pointer; box-shadow: 0 8px 25px rgba(255,45,120,0.4);
+    transition: 0.3s;
+  }
+  .magic-btn:active { transform: scale(0.95); }
+
+  /* Main Card Container */
+  #card { display: none; padding: 20px 15px; min-height: 100vh; background: linear-gradient(160deg, #fff0f7, #ffd6eb); }
+
+  .card-inner {
+    max-width: 550px; margin: 0 auto;
+    background: rgba(255,255,255,0.92);
+    border: 2px solid #ffb3d1; border-radius: 30px; padding: 30px 20px;
+    text-align: center; box-shadow: 0 10px 40px rgba(0,0,0,0.05);
+    animation: popIn 0.6s cubic-bezier(.34, 1.56, .64, 1);
+  }
+  @keyframes popIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+  .c-name { font-size: clamp(32px, 8vw, 45px); color: #c8005a; font-style: italic; margin-bottom: 15px; }
+  .c-bday { font-size: clamp(28px, 6vw, 38px); font-weight: 800; color: #e0136b; }
+
+  /* Message Box Styles */
+  .msg-box {
+    background: #fff9fb; border: 1.5px solid #ffb3d1; border-radius: 20px;
+    padding: 20px; margin: 20px 0; min-height: 140px;
+    display: flex; flex-direction: column; justify-content: center;
+  }
+  .msg-text { font-size: 16px; color: #8b0050; font-style: italic; line-height: 1.6; }
+
+  /* Tags/Photo Section - Optimized for Grid */
+  .tags-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 10px; margin: 20px 0;
+  }
+  .tag2 {
+    background: #ffe0ef; border: 1px solid #ffb3d1; padding: 8px;
+    border-radius: 12px; cursor: pointer; font-size: 13px; font-weight: bold; color: #8b0050;
+  }
+  .tag2 img { display: block; width: 100%; height: 80px; object-fit: cover; border-radius: 8px; margin-top: 5px; }
+
+  /* Navigation */
+  .nav-row { display: flex; gap: 10px; justify-content: center; margin-bottom: 10px; }
+  .nav-btn { background: #ffb3d1; border: none; padding: 8px 20px; border-radius: 15px; cursor: pointer; font-weight: bold; }
+
+  /* Image Modal (Popup) */
+  #modal {
+    display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9);
+    z-index: 200; justify-content: center; align-items: center; padding: 20px;
+  }
+  #modal img { max-width: 100%; max-height: 80vh; border-radius: 10px; }
+  
+  #confetti-layer { position: fixed; inset: 0; pointer-events: none; z-index: 150; }
+</style>
+</head>
+<body>
+
+<div id="splash">
+  <div class="splash-particles" id="spart"></div>
+  <span class="big-kitty">🐱</span>
+  <div class="splash-title">A surprise awaits...</div>
+  <button class="magic-btn" onclick="doMagic()">✨ Open Gana's Gift ✨</button>
+</div>
+
+<div id="confetti-layer"></div>
+
+<div id="card">
+  <div class="card-inner">
+    <div style="color: #ff2d78; font-weight: bold; letter-spacing: 2px;">🎀 BIRTHDAY VIBES 🎀</div>
+    <div class="c-bday">Happy Birthday</div>
+    <div class="c-name">Ganasri 💕</div>
+    
+    <div style="font-size: 30px; margin: 10px 0;">🎂✨🌸</div>
+
+    <div class="msg-box" id="msgBox">
+      <div class="msg-text" id="msgText"></div>
+      <div style="margin-top: 10px; font-weight: bold; color: #cc2266;" id="msgFrom"></div>
+    </div>
+
+    <div class="nav-row">
+      <button class="nav-btn" onclick="prevMsg()">←</button>
+      <button class="nav-btn" onclick="nextMsg()">→</button>
+    </div>
+
+    <div style="font-size: 12px; color: #cc2266; margin: 20px 0 10px;">📸 TAP TO VIEW MEMORIES</div>
+    
+    <div class="tags-grid">
+      <div class="tag2" onclick="openImg(this.querySelector('img').src)">💖 Loved <img src="/Users/s.praveen/Downloads/WhatsApp Image 2026-04-20 at 14.51.37.jpeg" alt="Gana"></div>
+      <div class="tag2" onclick="openImg(this.querySelector('img').src)">🌸 Pretty <img src="/Users/s.praveen/Downloads/WhatsApp Image 2026-04-20 at 15.08.31.jpeg" alt="Gana"></div>
+      <div class="tag2" onclick="openImg(this.querySelector('img').src)">🐱 Purrfect <img src="/Users/s.praveen/Downloads/WhatsApp Image 2026-04-20 at 16.56.21.jpeg" alt="Gana"></div>
+      <div class="tag2" onclick="openImg(this.querySelector('img').src)">✨ Magical <img src="/Users/s.praveen/Downloads/WhatsApp Image 2026-04-20 at 16.56.20.jpeg "alt="Gana"></div>
+    </div>
+
+    <div style="font-size: 20px;">🎈🎈🎈</div>
+    <div style="font-size: 11px; margin-top: 15px; opacity: 0.7;">Made with love for Gana 😇💙</div>
+  </div>
+</div>
+
+<div id="modal" onclick="this.style.display='none'">
+  <img id="modalImg" src="">
+  <p style="color: white; position: absolute; bottom: 20px;">Tap anywhere to close</p>
+</div>
+
+<script>
+const msgs = [
+  {text:"Wishing you the most purrfect birthday ever! 😻 You light up every room you walk into.", from:"— Your Best friend 🌸"},
+  {text:"Every day feels special with you. I hope you feel all the love you give to others today!", from:"— Forever Friend 🎀"},
+  {text:"You deserve all the cake, all the kitties, and all the happiness in the world! 🐱🎂", from:"— Your Adorer 🩷"},
+  {text:"May every wish you make today come true. You are absolutely one of a kind!", from:"— Cheerleader 🎈"}
+];
+
+let cur = 0;
+
+function showMsg(idx) {
+  document.getElementById('msgText').textContent = msgs[idx].text;
+  document.getElementById('msgFrom').textContent = msgs[idx].from;
+}
+
+function nextMsg() { cur = (cur + 1) % msgs.length; showMsg(cur); }
+function prevMsg() { cur = (cur - 1 + msgs.length) % msgs.length; showMsg(cur); }
+
+function openImg(src) {
+  document.getElementById('modalImg').src = src;
+  document.getElementById('modal').style.display = 'flex';
+}
+
+function spawnConfetti() {
+  const layer = document.getElementById('confetti-layer');
+  for(let i=0; i<60; i++) {
+    const el = document.createElement('div');
+    el.style.cssText = `position:absolute; width:10px; height:10px; background:${['#ff6aaa','#ff2d78','#fff'][Math.floor(Math.random()*3)]}; left:${Math.random()*100}%; top:-10px; border-radius:2px; animation: fall ${2+Math.random()*3}s linear forwards;`;
+    layer.appendChild(el);
+  }
+}
+
+// Add CSS animation for confetti dynamically
+const style = document.createElement('style');
+style.innerHTML = `@keyframes fall { to { transform: translateY(110vh) rotate(720deg); opacity: 0; } }`;
+document.head.appendChild(style);
+
+function doMagic() {
+  spawnConfetti();
+  setTimeout(() => {
+    document.getElementById('splash').style.display = 'none';
+    document.getElementById('card').style.display = 'block';
+    showMsg(0);
+  }, 600);
+}
+
+// Splash Background Particles
+const spart = document.getElementById('spart');
+const ems = ['🩷','✨','🐾','🌸'];
+for(let i=0; i<20; i++) {
+  const s = document.createElement('div');
+  s.className = 'sp';
+  s.textContent = ems[i%4];
+  s.style.left = Math.random()*100+'%';
+  s.style.fontSize = '20px';
+  s.style.animationDuration = (5+Math.random()*5)+'s';
+  s.style.animationDelay = '-'+(Math.random()*10)+'s';
+  spart.appendChild(s);
+}
+</script>
+</body>
+</html>
